@@ -14,13 +14,13 @@ Features
 Getting started
 ===============
 
-Install
+Local installation
 ------
 
 .. code-block:: shell
 
-python3 setup.py sdist bdist_wheel
-pip install dist/pytomato-0.0.1-py3-none-any.whl
+    python3 setup.py sdist bdist_wheel
+    pip3 install dist/tomato-0.0.1-py3-none-any.whl
 
 Server
 ------
