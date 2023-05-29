@@ -1,3 +1,13 @@
+'''
+FilePath: /tomato/setup.py
+Author: Gavin Tang
+LastEditors: Gavin Tang
+Description: ...
+Date: 2023-05-29 18:58:30
+LastEditTime: 2023-05-29 18:58:56
+Copyright: ©2022 MaoMaoTrip All rights reserved.
+'''
+
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 
@@ -6,8 +16,8 @@ import sys
 from setuptools import setup, find_packages
 
 
-if sys.version_info < (3, 5, 3):
-    raise RuntimeError('aiohttp 3.x requires Python 3.5.3+')
+if sys.version_info < (3, 8, 0):
+    raise RuntimeError('aiohttp 3.x requires Python 3.8.0+')
 
 with open('requirements.txt') as f:
     requirements = [l for l in f.read().splitlines() if l]

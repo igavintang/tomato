@@ -19,6 +19,7 @@ Local installation
 
 .. code-block:: shell
 
+    pip3 install wheel
     python3 setup.py sdist bdist_wheel
     pip3 install dist/tomato-0.0.1-py3-none-any.whl
 

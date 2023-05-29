@@ -4,7 +4,7 @@ aiohttp==3.8.4
 aiomysql==0.0.17
 aioredis==1.2.0
 async-timeout==4.0.2
-cchardet==2.1.7
+chardet==5.1.0
 configparser==3.5.0
 multidict==6.0.4
 hiredis==0.2.0
