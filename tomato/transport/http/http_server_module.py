@@ -25,9 +25,7 @@ class HttpServerModule(AppModule):
         self._host = args[0] if len(args) > 0 else kwargs.get('host', 'localhost')
         self._port = int(args[1] if len(args) > 1 else kwargs.get('port', '1024'))
         self._routes_list = kwargs.get('routes_list', [])
-
-        # self._app = web.Application(middlewares=[self.base_middleware,])
-        self._app = web.Application()
+        self._app = web.Application(middlewares=[self.base_middleware,])
         self._app.router.add_route('get', '/', self.default_handler)
         for routes in self._routes_list:
             self._app.router.add_routes(routes)
@@ -51,10 +49,9 @@ class HttpServerModule(AppModule):
         await self.destroy()
 
     def default_handler(self, request):
-        req_params = request.query
         response = web.Response(body=index_html.text.encode('utf-8'))
         response.headers['Content-Language'] = 'en'
-        response.headers['Content-Type'] = 'en'
+        response.headers['Content-Type'] = 'text/html'
         return response
 
     @web.middleware
@@ -66,14 +63,19 @@ class HttpServerModule(AppModule):
                 try:
                     request.body = json.loads(request.body)
                 except Exception as e:
-                    logging.warning('json format warning, errmsg[%s]', str(e))
-                    return web.json_response({'ret': 0, 'msg': 'params error'})
-        logging.warning('type[%s]', type(handler))
+                    logging.warning('Fail to parse request, err: %s', str(e))
+                    return web.Response(body={'code': 'BAD_REQUEST',
+                                              'msg': 'Bad request, '
+                                              'please check parameters'},
+                                              status=400,
+                                              content_type='application/json')
         response = await handler(request)
         if isinstance(response, dict):
-            return web.json_response(response)
+            headers = response['headers'] if 'headers' in response else None
+            if 'Content-Type' not in headers:
+                headers['Content-Type'] = 'application/json'
+            return web.Response(body=response['body'] if 'body' in response else None,
+                                status=response['status'] if 'status' in response else 200,
+                                headers=headers)
         else:
             return web.Response(body=response)
-
-        response = await handler(request)
-        return response
