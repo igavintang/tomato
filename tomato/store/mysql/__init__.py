@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 
+from .mysql_model import MySqlModel
 from .mysql_module import MySQLModule
 from .mysql_module import MySQLModule as MySQL
 from .mysql_controller import MysqlController

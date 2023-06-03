@@ -4,7 +4,7 @@ Author: Gavin Tang
 LastEditors: Gavin Tang
 Description: ...
 Date: 2021-01-25 21:35:02
-LastEditTime: 2023-05-27 22:13:25
+LastEditTime: 2023-06-02 15:30:18
 Copyright: ©2022 MaoMaoTrip All rights reserved.
 '''
 
@@ -17,6 +17,7 @@ import chardet
 import importlib
 import configparser
 import tornado.autoreload
+from .xid import Xid
 
 def autoreload():
     tornado.autoreload.start()

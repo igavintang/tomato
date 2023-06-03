@@ -71,7 +71,7 @@ class HttpServerModule(AppModule):
                                               content_type='application/json')
         response = await handler(request)
         if isinstance(response, dict):
-            headers = response['headers'] if 'headers' in response else None
+            headers = response['headers'] if 'headers' in response else {}
             if 'Content-Type' not in headers:
                 headers['Content-Type'] = 'application/json'
             return web.Response(body=response['body'] if 'body' in response else None,
