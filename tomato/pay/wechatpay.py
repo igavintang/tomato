@@ -4,7 +4,7 @@ Author: Gavin Tang
 LastEditors: Gavin Tang
 Description: WeChatPay
 Date: 2023-05-04 16:23:27
-LastEditTime: 2023-07-06 20:50:55
+LastEditTime: 2023-07-06 21:11:01
 '''
 
 # -*- coding:utf-8 -*-
@@ -16,6 +16,7 @@ import requests
 import string
 import base64
 import random
+import logging
 
 from tomato.util.singleton import singleton
 
@@ -69,7 +70,7 @@ class WeChatPay(object):
             sign_list.append('')
         sign_str = '\n'.join(sign_list) + '\n'
 
-        print("sign_str:", sign_str)
+        logging.debug("sign_str: %s", sign_str)
         return WeChatPayUtil.signature(app_private_key_string=self.app_private_key_string, sign_str=sign_str)
 
     def _generate_pay_sign(self, app_id, data, nonce_str, timestamp):
@@ -125,14 +126,14 @@ class WeChatPay(object):
         nonce_str = ''.join(random.sample(string.ascii_letters + string.digits, 16))
         data = json.dumps(data)
         signature = self._generate_request_sign(url_path=url_path, data=data, nonce_str=nonce_str, timestamp=timestamp)
-        print("signature:", signature)
+        logging.debug("signature: %s", signature)
 
-        print("Authorization signature:", self._generate_auth_header(signature, nonce_str, timestamp))
+        logging.debug("Authorization signature: %s", self._generate_auth_header(signature, nonce_str, timestamp))
         headers = {'Authorization': self._generate_auth_header(signature, nonce_str, timestamp), 'Content-Type': 'application/json'}
 
         response = requests.post(url=url, data=data, headers=headers, timeout=self.timeout_s)
         prepay_info = json.loads(response.content)
-        print("prepay_info:", prepay_info)
+        logging.debug("prepay_info: %s", prepay_info)
 
         # 支付签名
         pay_sign = self._generate_pay_sign(app_id=self.app_id, data=prepay_info['prepay_id'],
