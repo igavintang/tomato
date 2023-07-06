@@ -11,7 +11,10 @@
 
 import json
 import logging
+
 from aiohttp import web
+from urllib.parse import parse_qs
+
 from tomato.util.appmodule import AppModule
 from tomato.transport.http import index_html
 
@@ -32,6 +35,11 @@ class HttpServerModule(AppModule):
 
     def setup(self):
         pass
+
+    def parse_form_data(self, data):
+        parsed_data = parse_qs(data)
+        cleaned_data = {key: values[0] for key, values in parsed_data.items()}
+        return cleaned_data
 
     async def run(self):
         self._runner = web.AppRunner(self._app)
@@ -62,6 +70,17 @@ class HttpServerModule(AppModule):
             if request.content_type == 'application/json':
                 try:
                     request.body = json.loads(request.body)
+                except Exception as e:
+                    logging.warning('Fail to parse request, err: %s', str(e))
+                    return web.Response(body={'code': 'BAD_REQUEST',
+                                              'msg': 'Bad request, '
+                                              'please check parameters'},
+                                              status=400,
+                                              content_type='application/json')
+            elif request.content_type == 'application/x-www-form-urlencoded':
+                try:
+                    from_data = request.body.decode(encoding='utf-8')
+                    request.body = self.parse_form_data(from_data)
                 except Exception as e:
                     logging.warning('Fail to parse request, err: %s', str(e))
                     return web.Response(body={'code': 'BAD_REQUEST',
