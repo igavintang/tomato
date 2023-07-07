@@ -4,7 +4,7 @@ Author: Gavin Tang
 LastEditors: Gavin Tang
 Description: WeChatPay
 Date: 2023-05-04 16:23:27
-LastEditTime: 2023-07-07 20:11:06
+LastEditTime: 2023-07-07 21:09:17
 '''
 
 # -*- coding:utf-8 -*-
@@ -101,14 +101,14 @@ class WeChatPay(object):
         data = {
             'appid': self.app_id,
             'mchid': pay_info['mch_id'] if 'mch_id' in pay_info else self.mch_id,
-            'description': pay_info['description'],
+            'description': pay_info['subject'],
             'out_trade_no': pay_info['order_id'],
             'notify_url': pay_info['app_notify_url'] if 'app_notify_url' in pay_info else self.app_notify_url,
             'settle_info': {
                 'profit_sharing': pay_info['profit_sharing'] if 'profit_sharing' in pay_info else False,
             },
             'amount': {
-                'total': pay_info['amount'],
+                'total': pay_info['original_amount'],
                 'currency': pay_info['currency']
             },
         }
