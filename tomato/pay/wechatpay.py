@@ -4,7 +4,7 @@ Author: Gavin Tang
 LastEditors: Gavin Tang
 Description: WeChatPay
 Date: 2023-05-04 16:23:27
-LastEditTime: 2023-07-06 21:11:01
+LastEditTime: 2023-07-07 20:11:06
 '''
 
 # -*- coding:utf-8 -*-
@@ -18,11 +18,12 @@ import base64
 import random
 import logging
 
-from tomato.util.singleton import singleton
-
 from Crypto.Hash import SHA256
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
+from tomato.util.singleton import singleton
 
 
 class WeChatPayUtil(object):
@@ -56,6 +57,7 @@ class WeChatPay(object):
         app_private_key = kwargs.get('app_private_key')
         with open(app_private_key) as file:
             self.app_private_key_string = file.read()
+        self.apiv3_key = kwargs.get('apiv3_key')
         self.app_notify_url = kwargs.get('app_notify_url')  # 回调地址
         self.timeout_s = int(kwargs.get('timeout_s', 15))
 
@@ -147,3 +149,12 @@ class WeChatPay(object):
             'timestamp': timestamp,
             'sign': pay_sign,
         }
+
+    def decrypt_aesgcm(self, nonce, ciphertext, associated_data):
+        nonce_bytes = str.encode(nonce)
+        ad_bytes = str.encode(associated_data)
+        data = base64.b64decode(ciphertext)
+
+        key_bytes = str.encode(self.apiv3_key)
+        aesgcm = AESGCM(key_bytes)
+        return aesgcm.decrypt(nonce_bytes, data, ad_bytes).decode()

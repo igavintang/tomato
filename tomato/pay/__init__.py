@@ -4,11 +4,9 @@ Author: Gavin Tang
 LastEditors: Gavin Tang
 Description: ...
 Date: 2023-05-27 23:29:39
-LastEditTime: 2023-07-06 14:58:53
-Copyright: ©2022 MaoMaoTrip All rights reserved.
+LastEditTime: 2023-07-07 20:04:07
 '''
 
-#!/usr/bin/python
 # -*- coding:utf-8 -*-
 
 
